@@ -18,4 +18,6 @@ from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # include your relationship_app urls:
+    path('', include('relationship_app.urls')),
 ]
