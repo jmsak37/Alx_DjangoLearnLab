@@ -22,3 +22,9 @@ urlpatterns += [
     path('member-area/', member_view, name='member_view'),
  path('member-area/', member_view, name='member_view'),
 ]
+from .views import member_view
+
+urlpatterns += [
+    path('member-area/', member_view, name='member_view'),
+]
+
