@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import admin_view, librarian_view, member_view
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import 
+from .views import member_view  # add this alongside your other imports
+LoginView, LogoutView
 from . import views
 
 urlpatterns = [
@@ -18,4 +20,5 @@ urlpatterns += [
     path('admin-area/', admin_view, name='admin_view'),
     path('librarian-area/', librarian_view, name='librarian_view'),
     path('member-area/', member_view, name='member_view'),
+ path('member-area/', member_view, name='member_view'),
 ]
