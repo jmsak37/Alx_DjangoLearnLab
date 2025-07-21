@@ -7,6 +7,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from .models import Book, Library
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
 
 # 1. List all books
 def list_books(request):
@@ -42,3 +44,11 @@ def logout_view(request):
     logout(request)
     return render(request, 'relationship_app/logout.html')
 UserCreationForm()
+# helper to check role
+def is_member(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+
+@user_passes_test(is_member)
+def member_view(request):
+    # renders the member-specific template
+    return render(request, 'relationship_app/member_view.html')
