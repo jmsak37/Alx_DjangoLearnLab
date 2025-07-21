@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
-from . import views
+from . import views  # <-- Required for "views.register" to exist
 
 urlpatterns = [
     path('books/', views.list_books, name='list_books'),
