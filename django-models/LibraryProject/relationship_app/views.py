@@ -42,3 +42,26 @@ def logout_view(request):
     logout(request)
     return render(request, 'relationship_app/logout.html')
 UserCreationForm()
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+
+def is_admin(u):
+    return hasattr(u, 'userprofile') and u.userprofile.role == 'Admin'
+
+def is_librarian(u):
+    return hasattr(u, 'userprofile') and u.userprofile.role == 'Librarian'
+
+def is_member(u):
+    return hasattr(u, 'userprofile') and u.userprofile.role == 'Member'
+
+@user_passes_test(is_admin)
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(is_member)
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
