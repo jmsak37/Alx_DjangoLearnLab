@@ -8,6 +8,7 @@ from .models import Book, Library
 from .forms import BookForm
 from django.contrib.auth.decorators import permission_required
 from .models import Library
+from django.views.generic.detail import DetailView
 
 # ------------------------------
 # Basic Book/Library views
