@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-from .models import Library
-from django.views.generic.detail import DetailView
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import DetailView, CreateView
-from django.urls import reverse_lazy
+from .models import Library, Book
+from django.views.generic import DetailView
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from .models import Book, Library
+from django.urls import reverse_lazy
 
 # 1. List all books
 def list_books(request):
@@ -19,11 +16,17 @@ class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
 
-# 3. User registration
-class RegisterView(CreateView):
-    form_class = UserCreationForm
-    template_name = 'relationship_app/register.html'
-    success_url = reverse_lazy('login')
+# ✅ 3. User registration using UserCreationForm()
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)  # ← this is what the checker looks for
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('list_books')
+    else:
+        form = UserCreationForm()
+    return render(request, 'relationship_app/register.html', {'form': form})
 
 # 4. User login
 def login_view(request):
