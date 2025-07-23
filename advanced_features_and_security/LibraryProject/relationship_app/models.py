@@ -116,3 +116,6 @@ class Book(models.Model):
             ('can_delete_book', 'Can delete book'),
         ]
 
+user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+class CustomUser(AbstractUser), "date_of_birth", "profile_photo
