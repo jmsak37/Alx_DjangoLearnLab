@@ -126,6 +126,24 @@ AUTH_USER_MODEL = 'relationship_app.CustomUser'
 - DEBUG = True
 + DEBUG = False        # Never run production with DEBUG on
 
+# Redirect all HTTP to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security
+SECURE_HSTS_SECONDS = 31536000              # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure cookies: only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Clickjacking & sniffing protections
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+
+
 + # Browser security headers
 + SECURE_BROWSER_XSS_FILTER = True
 + X_FRAME_OPTIONS = 'DENY'
