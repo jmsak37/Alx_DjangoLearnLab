@@ -6,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import user_passes_test, permission_required
 from .models import Book, Library
 from .forms import BookForm
+from .forms import ExampleForm
 
 # New—list all books under the name the checker expects
 def book_list(request):
