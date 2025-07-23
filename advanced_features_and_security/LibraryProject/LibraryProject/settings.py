@@ -16,16 +16,15 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
+# SECURITY
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '-kw$!fiujuylhlzhsfp1zf@40$ly26!=%uva)5-7^xaqq&-%4j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['yourdomain.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -40,6 +39,7 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app',
 ]
+
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 
@@ -123,5 +123,25 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-AUTH_USER_MODEL = 'relationship_app.CustomUser'
 
+# SECURITY ENHANCEMENTS
+
+# Prevent browsers from MIME‑type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Activate the browser's built‑in XSS filtering
+SECURE_BROWSER_XSS_FILTER = True
+
+# Disallow this site from being framed to prevent clickjacking
+X_FRAME_OPTIONS = 'DENY'
+
+# Ensure CSRF cookie is only sent over HTTPS
+CSRF_COOKIE_SECURE = True
+
+# Ensure session cookie is only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+
+# HTTP Strict Transport Security
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True

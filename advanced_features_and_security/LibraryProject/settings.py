@@ -19,10 +19,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '-kw$!fiujuylhlzhsfp1zf@40$ly26!=%uva)5-7^xaqq&-%4j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False        # Never run production with DEBUG on
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -120,31 +121,23 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-# Use the custom user model
 AUTH_USER_MODEL = 'relationship_app.CustomUser'
 
+- DEBUG = True
++ DEBUG = False        # Never run production with DEBUG on
 
-# --------------------------------------------------
-# Security enhancements
-# --------------------------------------------------
++ # Browser security headers
++ SECURE_BROWSER_XSS_FILTER = True
++ X_FRAME_OPTIONS = 'DENY'
++ SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Prevent browsers from MIME‑type sniffing
-SECURE_CONTENT_TYPE_NOSNIFF = True
++ # Ensure cookies are only sent over HTTPS
++ CSRF_COOKIE_SECURE = True
++ SESSION_COOKIE_SECURE = True
 
-# Activate the browser's built‑in XSS filtering
-SECURE_BROWSER_XSS_FILTER = True
++ # (Optional) HSTS—tell browsers to only use HTTPS for your domain
++ SECURE_HSTS_SECONDS = 31536000
++ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
++ SECURE_HSTS_PRELOAD = True
 
-# Disallow this site from being framed to prevent clickjacking
-X_FRAME_OPTIONS = 'DENY'
 
-# Ensure CSRF cookie is only sent over HTTPS
-CSRF_COOKIE_SECURE = True
-
-# Ensure session cookie is only sent over HTTPS
-SESSION_COOKIE_SECURE = True
-
-# HTTP Strict Transport Security (HSTS)
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
