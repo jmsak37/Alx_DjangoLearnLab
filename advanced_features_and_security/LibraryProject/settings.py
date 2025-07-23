@@ -155,6 +155,7 @@ SECURE_BROWSER_XSS_FILTER = True
 
 # Redirect HTTP to HTTPS
 SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT
 
 + # (Optional) HSTS—tell browsers to only use HTTPS for your domain
 + SECURE_HSTS_SECONDS = 31536000
