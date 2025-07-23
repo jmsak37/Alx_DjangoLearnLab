@@ -153,6 +153,9 @@ SECURE_BROWSER_XSS_FILTER = True
 + CSRF_COOKIE_SECURE = True
 + SESSION_COOKIE_SECURE = True
 
+# Redirect HTTP to HTTPS
+SECURE_SSL_REDIRECT = True
+
 + # (Optional) HSTS—tell browsers to only use HTTPS for your domain
 + SECURE_HSTS_SECONDS = 31536000
 + SECURE_HSTS_INCLUDE_SUBDOMAINS = True
