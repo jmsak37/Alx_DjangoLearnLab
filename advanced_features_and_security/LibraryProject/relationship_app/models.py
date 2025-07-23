@@ -1,12 +1,9 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-#
-# 1. Custom user manager
-#
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -21,51 +18,39 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, password, **extra_fields)
-
-#
-# 2. Custom user model
-#
 class CustomUser(AbstractUser):
-    username = None  # remove username field
+    username = None                      # we’ll use email instead
     email = models.EmailField(unique=True)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField(upload_to='profiles/', null=True, blank=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []  # no additional required fields
+    REQUIRED_FIELDS = []                 # email is the only required
 
     objects = CustomUserManager()
 
     def __str__(self):
         return self.email
 
-#
-# 3. UserProfile for roles
-#
 class UserProfile(models.Model):
     ROLE_CHOICES = [
         ('Admin',     'Admin'),
-        ('Librarian', 'Librarian'),
-        ('Member',    'Member'),
+        ('Librarian','Librarian'),
+        ('Member',   'Member'),
     ]
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Member')
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
     def __str__(self):
-        return f"{self.user.email} ({self.role})"
+        return f"{self.user.username} ({self.role})"
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        # default to Member
+        UserProfile.objects.create(user=instance, role='Member')
 
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_user_profile(sender, instance, **kwargs):
-    instance.userprofile.save()
 
-#
-# 4. Domain models
-#
 class Author(models.Model):
     name = models.CharField(max_length=100)
 
@@ -75,13 +60,6 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
-
-    class Meta:
-        permissions = [
-            ('can_add_book',    'Can add book'),
-            ('can_change_book', 'Can change book'),
-            ('can_delete_book', 'Can delete book'),
-        ]
 
     def __str__(self):
         return self.title
@@ -99,3 +77,43 @@ class Librarian(models.Model):
 
     def __str__(self):
         return f"{self.name} @ {self.library.name}"
+
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Member')
+
+    def __str__(self):
+        return f"{self.user.username} ({self.role})"
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.userprofile.save()
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+    # … any existing fields …
+
+    class Meta:
+        permissions = [
+            ('can_add_book',    'Can add book'),
+            ('can_change_book', 'Can change book'),
+            ('can_delete_book', 'Can delete book'),
+        ]
+
+user = models.OneToOneField(User, on_delete=models.CASCADE)
