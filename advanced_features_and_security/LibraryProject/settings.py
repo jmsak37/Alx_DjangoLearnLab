@@ -162,4 +162,24 @@ SECURE_SSL_REDIRECT
 + SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 + SECURE_HSTS_PRELOAD = True
 
+# =====================
+# HTTPS & HSTS Settings
+# =====================
+
+# Redirect all HTTP to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# Instruct browsers to remember to only use HTTPS
+SECURE_HSTS_SECONDS = 31536000          # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Secure cookies: only send cookies over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Additional security headers
+X_FRAME_OPTIONS = 'DENY'                # prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True      # prevent MIME sniffing
+SECURE_BROWSER_XSS_FILTER = True        # enable browser XSS filter
 
