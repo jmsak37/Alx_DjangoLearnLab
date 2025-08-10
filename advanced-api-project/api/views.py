@@ -111,3 +111,39 @@ class AuthorDetailView(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
     permission_classes = [permissions.AllowAny]
+
+
+from rest_framework import generics
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Book
+from .serializers import BookSerializer
+
+# List + filter + search + ordering
+class BookListView(generics.ListCreateAPIView):
+    """
+    GET: lists books (supports ?search=, ?ordering=, ?<field>=value)
+    POST: create book (requires appropriate permissions if you add them)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    # enable filter backends (also set in settings.py)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+
+    # fields allowed for exact filtering via ?title=... or ?publication_year=...
+    filterset_fields = ['title', 'publication_year', 'author']  # author id or exact
+
+    # search: user can do ?search=term that matches these fields (text search)
+    search_fields = ['title', 'author__name']
+
+    # ordering: ?ordering=title or ?ordering=-publication_year
+    ordering_fields = ['title', 'publication_year']
+
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET/PUT/PATCH/DELETE a single book by pk.
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
