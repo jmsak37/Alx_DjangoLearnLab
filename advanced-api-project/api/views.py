@@ -4,6 +4,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
+from django_filters import rest_framework
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 class BookListCreateAPIView(generics.ListCreateAPIView):
