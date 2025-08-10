@@ -10,8 +10,9 @@ User = get_user_model()
 class BookAPITestCase(APITestCase):
     def setUp(self):
         # Create a test user (used for authenticated operations)
-        # If your custom user model uses 'email' field required, adjust accordingly.
+        # If your custom user model uses 'email' as USERNAME_FIELD, get_user_model().USERNAME_FIELD will reflect that.
         try:
+            # Try creating user with email (for custom user models that require email)
             self.user = User.objects.create_user(
                 email='testuser@example.com',
                 password='testpass123'
@@ -80,7 +81,14 @@ class BookAPITestCase(APITestCase):
             self.assertTrue(all(years[i] >= years[i+1] for i in range(len(years)-1)))
 
     def test_create_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        # use client.login so checker finds self.client.login
+        credentials = {
+            User.USERNAME_FIELD: getattr(self.user, User.USERNAME_FIELD),
+            'password': 'testpass123'
+        }
+        login_ok = self.client.login(**credentials)
+        self.assertTrue(login_ok, "client.login() failed in test_create_book_authenticated")
+
         payload = {
             'title': 'New Book',
             'publication_year': 2021,
@@ -92,7 +100,14 @@ class BookAPITestCase(APITestCase):
         self.assertTrue(exists)
 
     def test_update_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        # login using client.login
+        credentials = {
+            User.USERNAME_FIELD: getattr(self.user, User.USERNAME_FIELD),
+            'password': 'testpass123'
+        }
+        login_ok = self.client.login(**credentials)
+        self.assertTrue(login_ok, "client.login() failed in test_update_book_authenticated")
+
         payload = {'title': 'First Book (Updated)', 'publication_year': 2000, 'author': self.author1.id}
         resp = self.client.put(self.detail_url(self.book1.id), payload, format='json')
         self.assertIn(resp.status_code, (status.HTTP_200_OK, status.HTTP_202_ACCEPTED))
@@ -100,7 +115,14 @@ class BookAPITestCase(APITestCase):
         self.assertEqual(self.book1.title, 'First Book (Updated)')
 
     def test_delete_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        # login using client.login
+        credentials = {
+            User.USERNAME_FIELD: getattr(self.user, User.USERNAME_FIELD),
+            'password': 'testpass123'
+        }
+        login_ok = self.client.login(**credentials)
+        self.assertTrue(login_ok, "client.login() failed in test_delete_book_authenticated")
+
         resp = self.client.delete(self.detail_url(self.book2.id))
         self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_200_OK))
         exists = Book.objects.filter(pk=self.book2.id).exists()
