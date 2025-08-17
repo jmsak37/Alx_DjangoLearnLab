@@ -5,8 +5,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from .models import Post
 User = get_user_model()
-from .models import Post, Tag
+from taggit.forms import TagWidget
 
+User = get_user_model()
 
 class PostForm(forms.ModelForm):
     """Form to create and edit Post objects."""
@@ -16,7 +17,7 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Post title'}),
             'content': forms.Textarea(attrs={'rows': 10}),
-'tags': forms.Textarea(attrs={'rows': 10}),
+            'tags': TagWidget(),
         }
 
 class UserRegisterForm(UserCreationForm):
