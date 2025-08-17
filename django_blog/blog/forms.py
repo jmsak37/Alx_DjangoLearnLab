@@ -5,6 +5,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from .models import Post
 User = get_user_model()
+from .models import Post, Tag
+
 
 class PostForm(forms.ModelForm):
     """Form to create and edit Post objects."""
@@ -37,3 +39,28 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+
+
+
+class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        required=False,
+        help_text="Enter tags separated by commas (e.g. Django,Python,Tutorial)"
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+
+    def save(self, commit=True, *args, **kwargs):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()
+            tags_str = self.cleaned_data.get("tags", "")
+            tag_names = [t.strip() for t in tags_str.split(",") if t.strip()]
+            instance.tags.clear()
+            for name in tag_names:
+                tag, created = Tag.objects.get_or_create(name=name)
+                instance.tags.add(tag)
+        return instance

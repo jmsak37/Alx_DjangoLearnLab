@@ -25,4 +25,6 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='blog/home.html'), name='home'),
     path('', include('blog.urls', namespace='blog')),
     path('accounts/', include('blog.urls')),
+    path('search/', views.post_search, name='post_search'),
+    path('tags/<str:tag_name>/', views.posts_by_tag, name='posts_by_tag'),
 ]

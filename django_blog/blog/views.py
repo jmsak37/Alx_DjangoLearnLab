@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Post
+from django.db.models import Q
+from .models import Post, Tag
+
 
 # blog/views.py
 from django.shortcuts import render
@@ -134,3 +137,23 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user == self.get_object().author
+
+
+
+# Search view
+def post_search(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.all()
+    if query:
+        results = results.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/post_search.html', {'results': results, 'query': query})
+
+# View posts by tag
+def posts_by_tag(request, tag_name):
+    tag = get_object_or_404(Tag, name=tag_name)
+    posts = tag.posts.all()
+    return render(request, 'blog/posts_by_tag.html', {'tag': tag, 'posts': posts})
