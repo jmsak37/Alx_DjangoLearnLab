@@ -2,8 +2,18 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-
+from .models import Post
 User = get_user_model()
+
+class PostForm(forms.ModelForm):
+    """Form to create and edit Post objects."""
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Post title'}),
+            'content': forms.Textarea(attrs={'rows': 10}),
+        }
 
 class UserRegisterForm(UserCreationForm):
     """Extend Django's UserCreationForm to include an email field."""

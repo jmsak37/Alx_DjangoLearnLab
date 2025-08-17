@@ -1,0 +1,14 @@
+<!-- blog/templates/blog/post_form.html -->
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>{% if form.instance.pk %}Edit{% else %}New{% endif %} Post</title></head>
+<body>
+  <h1>{% if form.instance.pk %}Edit{% else %}New{% endif %} Post</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  <p><a href="{% url 'blog:post-list' %}">Back to posts</a></p>
+</body>
+</html>
