@@ -6,21 +6,17 @@ from django.contrib.auth import get_user_model
 from .models import Post
 User = get_user_model()
 from .models import Post, Tag
-from .models import Post
 
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ['title', 'content', 'tags']
 
 class PostForm(forms.ModelForm):
     """Form to create and edit Post objects."""
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'tags']
         widgets = {
             'title': forms.TextInput(attrs={'placeholder': 'Post title'}),
             'content': forms.Textarea(attrs={'rows': 10}),
+'tags': forms.Textarea(attrs={'rows': 10}),
         }
 
 class UserRegisterForm(UserCreationForm):
