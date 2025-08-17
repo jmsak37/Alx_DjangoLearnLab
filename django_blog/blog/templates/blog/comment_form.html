@@ -1,0 +1,11 @@
+<!-- blog/templates/blog/comment_form.html -->
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if object %}Edit comment{% else %}New comment{% endif %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Save{% else %}Post Comment{% endif %}</button>
+  </form>
+  <p><a href="{% if object %}{% url 'blog:post-detail' object.post.pk %}{% else %}{% url 'blog:post-detail' post_pk %}{% endif %}">Back</a></p>
+{% endblock %}

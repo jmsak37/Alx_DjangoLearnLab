@@ -1,5 +1,6 @@
 # blog/forms.py
 from django import forms
+from .models import Comment
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from .models import Post
@@ -29,3 +30,10 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("email",)  # add other editable fields if present (e.g. first_name)
+
+class CommentForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4}), label='')
+
+    class Meta:
+        model = Comment
+        fields = ['content']
