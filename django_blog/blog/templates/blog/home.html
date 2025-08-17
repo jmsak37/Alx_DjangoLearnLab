@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Home</title></head>
+<body>
+    <h1>Welcome</h1>
+    {% if user.is_authenticated %}
+        <p>Hello {{ user.username }} — <a href="{% url 'blog:profile' %}">Profile</a> — <a href="{% url 'blog:logout' %}">Logout</a></p>
+    {% else %}
+        <p><a href="{% url 'blog:login' %}">Login</a> | <a href="{% url 'blog:register' %}">Register</a></p>
+    {% endif %}
+</body>
+</html>
