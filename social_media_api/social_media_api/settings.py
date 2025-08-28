@@ -158,6 +158,7 @@ REST_FRAMEWORK = {
 MEDIA_URL = '/media/'
 import os
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+PORT = int(os.getenv('PORT', '8000'))
 
 # (Optional security, development-friendly defaults)
 DEBUG = True
