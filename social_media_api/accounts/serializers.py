@@ -88,3 +88,16 @@ class AuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError("Provide either username or email to authenticate.")
 
         return attrs
+class SimpleUserSerializer(serializers.ModelSerializer):
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'followers_count', 'following_count')
+
+    def get_followers_count(self, obj):
+        return getattr(obj, 'followers', obj.followers).count()
+
+    def get_following_count(self, obj):
+        return getattr(obj, 'following', obj.following).count()

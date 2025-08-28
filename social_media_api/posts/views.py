@@ -47,3 +47,24 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # If client posted a post id in data: use it; otherwise error will come from serializer
         serializer.save(author=self.request.user)
+
+
+
+# posts/views.py  (append or edit existing file)
+from rest_framework import generics, permissions
+from .models import Post
+from .serializers import PostSerializer
+
+class FeedListView(generics.ListAPIView):
+    """
+    Feed: posts authored by users the current authenticated user follows.
+    """
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = None  # or use your standard pagination class if you want paged feed
+
+    def get_queryset(self):
+        user = self.request.user
+        # If unauthenticated the permission class will prevent access.
+        following = user.following.all()
+        return Post.objects.filter(author__in=following).order_by('-created_at')
