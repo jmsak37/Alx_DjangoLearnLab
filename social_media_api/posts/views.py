@@ -6,6 +6,9 @@ from django.shortcuts import get_object_or_404
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
+from rest_framework import generics, permissions
+from .models import Post
+from .serializers import PostSerializer
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -47,13 +50,6 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # If client posted a post id in data: use it; otherwise error will come from serializer
         serializer.save(author=self.request.user)
-
-
-
-# posts/views.py  (append or edit existing file)
-from rest_framework import generics, permissions
-from .models import Post
-from .serializers import PostSerializer
 
 class FeedListView(generics.ListAPIView):
     """
