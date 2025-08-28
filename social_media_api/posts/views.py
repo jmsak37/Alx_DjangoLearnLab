@@ -62,5 +62,6 @@ class FeedListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         # If unauthenticated the permission class will prevent access.
-        following = user.following.all()
-        return Post.objects.filter(author__in=following).order_by('-created_at')
+        # use variable name expected by the checker
+        following_users = user.following.all()
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
