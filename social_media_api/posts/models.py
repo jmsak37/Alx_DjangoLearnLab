@@ -1,8 +1,29 @@
 # posts/models.py
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+
+
 
 User = settings.AUTH_USER_MODEL
+
+
+class Like(models.Model):
+    """
+    Tracks likes: which user liked which post.
+    Use unique_together to prevent duplicates.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
+    post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('user', 'post')
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user} liked {self.post_id}"
+
 
 class Post(models.Model):
     author = models.ForeignKey(

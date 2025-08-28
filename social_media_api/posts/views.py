@@ -9,6 +9,9 @@ from .permissions import IsOwnerOrReadOnly
 from rest_framework import generics, permissions
 from .models import Post
 from .serializers import PostSerializer
+from .models import Post, Like
+from notifications.models import Notification
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 10
@@ -65,3 +68,35 @@ class FeedListView(generics.ListAPIView):
         # use variable name expected by the checker
         following_users = user.following.all()
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+
+class LikePostAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        user = request.user
+        like, created = Like.objects.get_or_create(user=user, post=post)
+        if not created:
+            return Response({'detail': 'Already liked'}, status=status.HTTP_200_OK)
+
+        # create notification for post author (don't notify self)
+        if post.author != user:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=user,
+                verb='liked your post',
+                target_ct=ContentType.objects.get_for_model(post),
+                target_id=post.pk
+            )
+        return Response({'detail': 'liked'}, status=status.HTTP_201_CREATED)
+
+class UnlikePostAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        user = request.user
+        deleted, _ = Like.objects.filter(user=user, post=post).delete()
+        if deleted:
+            return Response({'detail': 'unliked'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'not liked'}, status=status.HTTP_400_BAD_REQUEST)
